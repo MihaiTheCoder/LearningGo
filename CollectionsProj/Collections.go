@@ -14,7 +14,7 @@ func main() {
 	fmt.Println(mySArray)
 	fmt.Println(len(mySArray)) //len(array) -> Get the size/length of any collection
 
-	mySlice := myArray[:] //Put the entire array in a slice
+	mySlice := myArray[:] //Put the entire array in a slice (slice is a list, you can append elements to it)
 	fmt.Println(mySlice)
 
 	mySlice = append(mySlice, 100) //append to slice
