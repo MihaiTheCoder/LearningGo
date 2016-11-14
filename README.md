@@ -1,3 +1,2 @@
 # LearningGo
-
-Go to Wiki https://github.com/MihaiTheCoder/LearningGo/wiki/CODE!!
+[Go to wiki link with Code](https://github.com/MihaiTheCoder/LearningGo/wiki/CODE!!)
