@@ -1,9 +1,10 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/http"
 	"strings"
+	"os"
+	"bufio"
 )
 
 func main() {
@@ -17,7 +18,8 @@ type MyHandler struct {
 
 func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	path := "public" + req.URL.Path
-	data, err := ioutil.ReadFile(path)
+
+	f, err := os.Open(path)
 
 	if err != nil {
 		w.WriteHeader(404)
@@ -26,7 +28,8 @@ func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	contentType := getContentType(path)
 	w.Header().Add("Content Type", contentType)
-	w.Write(data)
+	bufferedReader := bufio.NewReader(f)
+	bufferedReader.WriteTo(w)
 }
 
 func getContentType(path string) (contentType string) {
