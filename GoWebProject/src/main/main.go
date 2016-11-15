@@ -2,59 +2,32 @@ package main
 
 import (
 	"net/http"
-	"strings"
-	"os"
-	"bufio"
+	"text/template"
+	"fmt"
 )
 
 func main() {
-	http.Handle("/", new(MyHandler))
-	http.ListenAndServe(":8000", nil)
+	http.HandleFunc("/", serveHTTP)
+	http.ListenAndServe(":8001", nil)
 }
 
-type MyHandler struct {
-	http.Handler
-}
-
-func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	path := "public" + req.URL.Path
-
-	f, err := os.Open(path)
+func serveHTTP(w http.ResponseWriter, req *http.Request) {
+	w.Header().Add("Content-Type", "text/html")
+	tmpl, err := template.New("test").Parse(doc)
 
 	if err != nil {
-		w.WriteHeader(404)
-		w.Write([]byte("404 - " + http.StatusText(404)))
+		fmt.Println(err)
 		return
 	}
-	contentType := getContentType(path)
-	w.Header().Add("Content Type", contentType)
-	bufferedReader := bufio.NewReader(f)
-	bufferedReader.WriteTo(w)
+	tmpl.Execute(w, nil)
 }
 
-func getContentType(path string) (contentType string) {
-	contentType = defaultContentType
-
-	lastIndexOfDot := strings.LastIndex(path, ".")
-
-	if lastIndexOfDot < 0 {
-		return
-	}
-
-	extension := path[lastIndexOfDot:]
-
-	if tempContentType, ok := extensionToContentType[extension]; ok {
-		contentType = tempContentType
-	}
-	return
-}
-
-var extensionToContentType = map[string]string{
-	".css":  "text/css",
-	".html": "text/html",
-	".js":   "application/javascript",
-	".png":  "image/png",
-	".mp4":   "video/mp4",
-}
-
-const defaultContentType = "text/plain"
+const doc = `
+<!DOCTYPE html>
+<html>
+	<head><title>Example Title</title></head>
+	<body>
+		<h1> Hello Templates</h1>
+	</body>
+</html>
+`
