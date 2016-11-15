@@ -19,8 +19,8 @@ func serveHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	context := newContext()
-	tmpl.Execute(w, context)
+	//context := newContext()
+	tmpl.Execute(w, req.URL.Path)
 }
 
 const doc = `
@@ -28,7 +28,11 @@ const doc = `
 <html>
 	<head><title>Example Title</title></head>
 	<body>
-		<h1> Hello {{.Message}}</h1>
+	{{if eq . "/Google"}}
+		<h1>Hey, Google made Go!</h1>
+	{{else}}
+		<h1> Hello, {{.}} </h1>
+	{{end}}
 	</body>
 </html>
 `
