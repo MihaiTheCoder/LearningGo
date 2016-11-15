@@ -8,7 +8,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", serveHTTP)
-	http.ListenAndServe(":8001", nil)
+	http.ListenAndServe(":8000", nil)
 }
 
 func serveHTTP(w http.ResponseWriter, req *http.Request) {
@@ -19,7 +19,8 @@ func serveHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	tmpl.Execute(w, nil)
+	context := newContext()
+	tmpl.Execute(w, context)
 }
 
 const doc = `
@@ -27,7 +28,15 @@ const doc = `
 <html>
 	<head><title>Example Title</title></head>
 	<body>
-		<h1> Hello Templates</h1>
+		<h1> Hello {{.Message}}</h1>
 	</body>
 </html>
 `
+
+func newContext() (context Context)  {
+	context = Context{"the message"}
+	return
+}
+type Context struct {
+	Message string
+}
